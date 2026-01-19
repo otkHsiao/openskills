@@ -10,13 +10,21 @@ import { extractYamlField, hasValidFrontmatter } from '../../src/utils/yaml.js';
 
 describe('install.ts helper functions', () => {
   describe('isLocalPath detection', () => {
-    // Replicate the logic from isLocalPath()
+    // Replicate the updated logic from isLocalPath()
     const isLocalPath = (source: string): boolean => {
       return (
+        // Unix path patterns
         source.startsWith('/') ||
         source.startsWith('./') ||
         source.startsWith('../') ||
-        source.startsWith('~/')
+        source.startsWith('~/') ||
+        // Windows path patterns - convert match results to booleans using !!
+        !!source.match(/^[A-Za-z]:\\/) || // Windows absolute path with drive letter (backslash)
+        !!source.match(/^[A-Za-z]:\//) ||  // Windows absolute path with drive letter (forward slash)
+        source.startsWith('.\\') ||      // Windows relative path with backslash
+        source.startsWith('..\\') ||      // Windows parent relative path with backslash
+        source.startsWith('\\') ||        // Windows root-relative path with backslash
+        !!source.match(/^[A-Za-z]:[^\\\/]/)  // Windows drive-relative path (no leading slash/backslash)
       );
     };
 
@@ -38,6 +46,32 @@ describe('install.ts helper functions', () => {
     it('should detect home directory paths starting with ~/', () => {
       expect(isLocalPath('~/skills/my-skill')).toBe(true);
       expect(isLocalPath('~/.claude/skills')).toBe(true);
+    });
+
+    it('should detect Windows absolute paths with backslashes', () => {
+      expect(isLocalPath('C:\\absolute\\path')).toBe(true);
+      expect(isLocalPath('D:\\path\\to\\skill')).toBe(true);
+    });
+
+    it('should detect Windows absolute paths with forward slashes', () => {
+      expect(isLocalPath('C:/absolute/path')).toBe(true);
+      expect(isLocalPath('D:/path/to/skill')).toBe(true);
+    });
+
+    it('should detect Windows relative paths with backslashes', () => {
+      expect(isLocalPath('.\\relative\\path')).toBe(true);
+      expect(isLocalPath('.\\skill')).toBe(true);
+      expect(isLocalPath('\\absolute\\path')).toBe(true);
+    });
+
+    it('should detect Windows parent relative paths with backslashes', () => {
+      expect(isLocalPath('..\\parent\\path')).toBe(true);
+      expect(isLocalPath('..\\..\\deep\\path')).toBe(true);
+    });
+
+    it('should detect Windows drive-relative paths', () => {
+      expect(isLocalPath('C:relative\\path')).toBe(true);
+      expect(isLocalPath('D:path/to/skill')).toBe(true);
     });
 
     it('should NOT detect GitHub shorthand as local path', () => {
@@ -133,7 +167,9 @@ describe('install.ts helper functions', () => {
 
     it('should keep absolute paths as-is (resolved)', () => {
       const expanded = expandPath('/absolute/path');
-      expect(expanded).toBe('/absolute/path');
+      // On Windows, resolve() converts Unix paths to Windows format
+      const expected = process.platform === 'win32' ? resolve('/absolute/path') : '/absolute/path';
+      expect(expanded).toBe(expected);
     });
   });
 

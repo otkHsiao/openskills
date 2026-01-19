@@ -1,5 +1,5 @@
 {
-  "name": "openskills",
+  "name": "wic-fe-lib-openskills",
   "version": "1.5.0",
   "description": "Universal skills loader for AI coding agents - install and load Anthropic SKILL.md format skills in any agent",
   "type": "module",
@@ -39,9 +39,9 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/numman-ali/openskills.git"
+    "url": "git+https://github.com/otkHsiao/openskills.git"
   },
-  "homepage": "https://github.com/numman-ali/openskills#readme",
+  "homepage": "https://github.com/otkHsiao/openskills#readme",
   "engines": {
     "node": ">=20.6.0"
   },
