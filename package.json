@@ -1,11 +1,11 @@
 {
   "name": "wic-fe-lib-openskills",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "description": "Universal skills loader for AI coding agents - install and load Anthropic SKILL.md format skills in any agent",
   "type": "module",
   "main": "./dist/cli.js",
   "bin": {
-    "openskills": "./dist/cli.js"
+    "openskills": "dist/cli.js"
   },
   "files": [
     "dist",

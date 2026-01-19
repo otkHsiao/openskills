@@ -7,13 +7,17 @@ import { readSkill } from './commands/read.js';
 import { removeSkill } from './commands/remove.js';
 import { manageSkills } from './commands/manage.js';
 import { syncAgentsMd } from './commands/sync.js';
+import { updateSkills } from './commands/update.js';
+import { createRequire } from 'module';
 
 const program = new Command();
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json') as { version: string };
 
 program
   .name('openskills')
   .description('Universal skills loader for AI coding agents')
-  .version('1.2.1')
+  .version(version)
   .showHelpAfterError(false)
   .exitOverride((err) => {
     // Handle all commander errors gracefully (no stack traces)
@@ -46,9 +50,14 @@ program
   .action(installSkill);
 
 program
-  .command('read <skill-name>')
-  .description('Read skill to stdout (for AI agents)')
+  .command('read <skill-names...>')
+  .description('Read skill(s) to stdout (for AI agents)')
   .action(readSkill);
+
+program
+  .command('update [skill-names...]')
+  .description('Update installed skills from their source (default: all)')
+  .action(updateSkills);
 
 program
   .command('sync')
