@@ -189,10 +189,10 @@ npx openskills remove <name>               # Remove specific skill
 
 ### Roo Code Integration
 
-The `sync` command automatically creates slash commands for [Roo Code](https://github.com/RooVetGit/Roo-Code) in `.roo/command/`. Each skill becomes a `/skillname` command that instructs Roo to load and use that skill.
+The `sync` command automatically creates slash commands for [Roo Code](https://github.com/RooVetGit/Roo-Code) in `.roo/commands/`. Each skill becomes a `/skillname` command that instructs Roo to load and use that skill.
 
 ```
-.roo/command/
+.roo/commands/
 ├── pdf.md          # /pdf command
 ├── xlsx.md         # /xlsx command
 └── code-review.md  # /code-review command
